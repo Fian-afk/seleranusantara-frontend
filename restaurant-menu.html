@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selera Nusantara</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#FF6B35',secondary:'#2D2D2D'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- JS -->
+    <script src="script/script-fnb.js"></script>
+
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .card-hover {
+            transition: transform 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .custom-checkbox {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        .checkmark {
+            position: relative;
+            display: inline-block;
+            height: 20px;
+            width: 20px;
+            background-color: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 4px;
+        }
+        .custom-checkbox:checked ~ .checkmark {
+            background-color: #FF6B35;
+            border-color: #FF6B35;
+        }
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .custom-checkbox:checked ~ .checkmark:after {
+            display: block;
+            left: 6px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .d-none {
+            display: none;
+        }
+        .filter-btn {
+            background-color: white;
+            color: #374151;
+            border: 1px solid #e2e8f0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .filter-btn:active {
+            background-color: #FF6B35;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-10 h-10 flex items-center justify-center bg-primary rounded-full text-white mr-3">
+                    <i class="ri-restaurant-2-fill ri-lg"></i>
+                </div>
+                <h1 class="font-['Pacifico'] text-2xl text-gray-800">Selera Nusantara</h1>
+            </div>
+            
+            <div class="flex items-center">
+                <nav class="hidden md:flex mr-6">
+                    <a href="restaurant-beranda.html" class="mx-3 text-gray-700 hover:text-primary font-medium">Beranda</a>
+                    <a href="restaurant-menu.html" class="mx-3 text-primary font-medium border-b-2 border-primary">Menu</a>
+                    <a href="restaurant-about.html" class="mx-3 text-gray-700 hover:text-primary font-medium">Tentang Kami</a>
+                    <a href="restaurant-kontak.html" class="mx-3 text-gray-700 hover:text-primary font-medium">Kontak</a>
+                </nav>
+                
+                <div class="relative">
+                    <button id="keranjang" class="relative p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors !rounded-button">
+                        <div class="w-6 h-6 flex items-center justify-center">
+                            <i class="ri-shopping-cart-2-line"></i>
+                        </div>
+                        <span class="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center bg-primary text-white text-xs rounded-full">3</span>
+                    </button>
+                </div>
+                <!-- Tombol Burger -->
+                <button id="burger" class="ml-4 md:hidden p-2 rounded-full hover:bg-gray-100 !rounded-button">
+                    <div class="w-6 h-6 flex items-center justify-center">
+                        <i class="ri-menu-line"></i>
+                    </div>
+                </button>
+                
+            </div>
+        </div>
+        
+    </header>
+<!-- Sidebar -->
+<div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+    <div class="flex justify-between items-center p-4 border-b">
+      <span class="text-lg font-bold">Menu</span>
+      <button id="closeSidebar" class="p-2 rounded-full hover:bg-gray-100">
+        <i class="ri-close-line text-xl"></i>
+      </button>
+    </div>
+    <nav class="flex flex-col p-4 space-y-4">
+      <a href="restaurant-beranda.html" class="text-gray-700 hover:text-primary font-medium">Beranda</a>
+      <a href="restaurant-menu.html" class="text-primary font-medium">Menu</a>
+      <a href="restaurant-about.html" class="text-gray-700 hover:text-primary font-medium">Tentang Kami</a>
+      <a href="restaurant-kontak.html" class="text-gray-700 hover:text-primary font-medium">Kontak</a>
+    </nav>
+  </div>
+
+    <main class="container mx-auto px-4 py-6">
+        <!-- Search & Filter -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Daftar Menu Kami</h2>
+                
+                <div class="relative w-full md:w-80">
+                    <input type="text" placeholder="Cari menu..." id="search" class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 flex items-center justify-center text-gray-400">
+                        <i class="ri-search-line"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2">
+                <button data-kategori="semua" class="filter-btn px-4 py-2 bg-primary text-white rounded-full text-sm font-medium !rounded-button whitespace-nowrap active">
+                    Semua
+                </button>
+                <button data-kategori="makanan-utama" class="filter-btn px-4 py-2 bg-white text-gray-700 rounded-full text-sm font-medium hover:bg-primary hover:text-white !rounded-button whitespace-nowrap">
+                    Makanan Utama
+                </button>
+                <button data-kategori="minuman" class="filter-btn px-4 py-2 bg-white text-gray-700 rounded-full text-sm font-medium hover:bg-primary hover:text-white !rounded-button whitespace-nowrap">
+                    Minuman
+                </button>
+                <button data-kategori="dessert" class="filter-btn px-4 py-2 bg-white text-gray-700 rounded-full text-sm font-medium hover:bg-primary hover:text-white !rounded-button whitespace-nowrap">
+                    Dessert
+                </button>
+                <button data-kategori="makanan-ringan" class="filter-btn px-4 py-2 bg-white text-gray-700 rounded-full text-sm font-medium hover:bg-primary hover:text-white !rounded-button whitespace-nowrap">
+                    Makanan Ringan
+                </button>
+            </div>
+        </div>
+        
+        <!-- Menu Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Menu Item 1 -->
+            <div data-kategori="makanan-utama" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Nasi%20Goreng%20with%20shrimp%2C%20egg%2C%20and%20vegetables%2C%20served%20on%20a%20white%20plate%20with%20garnish%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=1&orientation=landscape" alt="Nasi Goreng Spesial" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Nasi Goreng Spesial</h3>
+                        <span class="text-primary font-bold">Rp 45.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Nasi goreng dengan udang, telur, ayam, dan sayuran pilihan. Disajikan dengan kerupuk dan acar.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                                <span class="ml-1 text-gray-600">4.5</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 2 -->
+            <div data-kategori="makanan-utama" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Sate%20Ayam%20with%20peanut%20sauce%2C%20served%20with%20rice%20cake%20%28lontong%29%20and%20sliced%20cucumber%20and%20onions%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=2&orientation=landscape" alt="Sate Ayam" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Sate Ayam</h3>
+                        <span class="text-primary font-bold">Rp 38.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Sate ayam dengan bumbu kacang khas, disajikan dengan lontong, acar, dan bawang merah.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-line"></i>
+                                <span class="ml-1 text-gray-600">4.0</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 3 -->
+            <div data-kategori="makanan-utama" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Gado-gado%20with%20vegetables%2C%20egg%2C%20tofu%2C%20tempeh%2C%20and%20peanut%20sauce%2C%20beautifully%20arranged%20on%20a%20plate%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=3&orientation=landscape" alt="Gado-Gado" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Gado-Gado</h3>
+                        <span class="text-primary font-bold">Rp 35.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Sayuran segar, telur, tahu, tempe dengan saus kacang. Disajikan dengan kerupuk udang.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                                <span class="ml-1 text-gray-600">4.7</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 4 -->
+            <div data-kategori="minuman" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Es%20Cendol%20with%20coconut%20milk%2C%20palm%20sugar%20syrup%2C%20and%20green%20rice%20flour%20jelly%2C%20served%20in%20a%20clear%20glass%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=4&orientation=landscape" alt="Es Cendol" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Es Cendol</h3>
+                        <span class="text-primary font-bold">Rp 25.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Minuman segar dengan cendol hijau, santan, dan gula merah. Cocok untuk cuaca panas.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-line"></i>
+                                <span class="ml-1 text-gray-600">4.2</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 5 -->
+            <div data-kategori="makanan-utama" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Rendang%20beef%20with%20rich%20spicy%20sauce%2C%20served%20with%20white%20rice%20on%20a%20decorative%20plate%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=5&orientation=landscape" alt="Rendang Sapi" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Rendang Sapi</h3>
+                        <span class="text-primary font-bold">Rp 55.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Daging sapi dimasak dengan rempah-rempah khas Padang. Disajikan dengan nasi putih.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <span class="ml-1 text-gray-600">5.0</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 6 -->
+            <div data-kategori="dessert" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Martabak%20Manis%20%28sweet%20pancake%29%20with%20chocolate%2C%20cheese%2C%20and%20condensed%20milk%20toppings%2C%20cut%20into%20squares%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=6&orientation=landscape" alt="Martabak Manis" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Martabak Manis</h3>
+                        <span class="text-primary font-bold">Rp 40.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Martabak manis dengan topping coklat, keju, dan susu. Lembut di dalam, renyah di luar.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                                <span class="ml-1 text-gray-600">4.6</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 7 -->
+            <div data-kategori="makanan-utama" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Soto%20Ayam%20with%20clear%20broth%2C%20shredded%20chicken%2C%20vermicelli%2C%20and%20vegetables%2C%20garnished%20with%20fried%20shallots%20and%20herbs%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=7&orientation=landscape" alt="Soto Ayam" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Soto Ayam</h3>
+                        <span class="text-primary font-bold">Rp 35.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Sup ayam dengan kuah kuning, soun, telur, dan taburan bawang goreng. Disajikan dengan nasi.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-line"></i>
+                                <span class="ml-1 text-gray-600">4.3</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 8 -->
+            <div data-kategori="minuman" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Teh%20Tarik%20%28pulled%20tea%29%20with%20frothy%20top%2C%20served%20in%20a%20clear%20glass%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=8&orientation=landscape" alt="Teh Tarik" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Teh Tarik</h3>
+                        <span class="text-primary font-bold">Rp 18.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Teh susu yang ditarik untuk menciptakan lapisan busa yang lembut. Disajikan panas atau dingin.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-line"></i>
+                                <span class="ml-1 text-gray-600">4.1</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Menu Item 9 -->
+            <div data-kategori="makanan-ringan" class="bg-white rounded-lg shadow-sm overflow-hidden card-hover">
+                <div class="h-48 overflow-hidden">
+                    <img src="https://readdy.ai/api/search-image?query=Indonesian%20Pisang%20Goreng%20%28fried%20banana%29%20with%20caramel%20drizzle%20and%20vanilla%20ice%20cream%2C%20served%20on%20a%20decorative%20plate%2C%20professional%20food%20photography%2C%20bright%20and%20appetizing%2C%20high-quality%20restaurant%20presentation&width=600&height=400&seq=9&orientation=landscape" alt="Pisang Goreng" class="w-full h-full object-cover object-top">
+                </div>
+                <div class="p-4">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-semibold text-gray-800">Pisang Goreng</h3>
+                        <span class="text-primary font-bold">Rp 28.000</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Pisang raja digoreng dengan tepung krispi, disajikan dengan es krim vanilla dan sirup karamel.</p>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex items-center text-amber-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                                <span class="ml-1 text-gray-600">4.5</span>
+                            </div>
+                        </div>
+                        <button class="px-3 py-2 bg-primary text-white rounded-lg text-sm font-medium !rounded-button whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-shopping-cart-2-line"></i>
+                                </div>
+                                <span>Tambah</span>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Load More Button -->
+        <div class="flex justify-center mt-10">
+            <button class="px-6 py-3 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 !rounded-button whitespace-nowrap">
+                <div class="flex items-center">
+                    <span>Muat Lebih Banyak</span>
+                    <div class="w-5 h-5 flex items-center justify-center ml-2">
+                        <i class="ri-arrow-down-line"></i>
+                    </div>
+                </div>
+            </button>
+        </div>
+    </main>
+    
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-4 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-primary rounded-full text-white mr-3">
+                            <i class="ri-restaurant-2-fill ri-lg"></i>
+                        </div>
+                        <h3 class="font-['Pacifico'] text-xl">Selera Nusantara</h3>
+                    </div>
+                    <p class="text-gray-300 mb-4">Menyajikan hidangan Indonesia autentik dengan cita rasa yang khas dan bahan-bahan pilihan terbaik.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-700 rounded-full hover:bg-primary transition-colors">
+                            <i class="ri-facebook-fill"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-700 rounded-full hover:bg-primary transition-colors">
+                            <i class="ri-instagram-line"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 flex items-center justify-center bg-gray-700 rounded-full hover:bg-primary transition-colors">
+                            <i class="ri-twitter-x-line"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Jam Operasional</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between">
+                            <span>Senin - Jumat</span>
+                            <span>10:00 - 22:00</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Sabtu - Minggu</span>
+                            <span>09:00 - 23:00</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>Hari Libur</span>
+                            <span>09:00 - 23:00</span>
+                        </li>
+                    </ul>
+                    
+                    <h4 class="text-lg font-semibold mt-6 mb-4">Kontak</h4>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-2">
+                                <i class="ri-map-pin-line"></i>
+                            </div>
+                            <span>Jl. Gatot Subroto No. 123, Jakarta</span>
+                        </li>
+                        <li class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-2">
+                                <i class="ri-phone-line"></i>
+                            </div>
+                            <span>+62 21 5678 9012</span>
+                        </li>
+                        <li class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-2">
+                                <i class="ri-mail-line"></i>
+                            </div>
+                            <span>info@seleranusantara.id</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="relative w-full max-w-xl overflow-hidden">
+                    <h4 class="text-lg font-semibold mb-4">Berlangganan</h4>
+                    <p class="text-gray-300 mb-4">Dapatkan informasi terbaru dan promo spesial dari kami.</p>
+                    <div class="flex mb-4 relative overflow-hidden">
+                        <input type="email" placeholder="Email Anda" class="flex-1 w-100% px-4 py-2 rounded-l-lg border-none text-gray-800 text-sm">
+                        <button class="px-4 py-2 bg-primary text-white rounded-r-lg whitespace-nowrap">Langganan</button>
+                    </div>
+                    
+                    <h4 class="text-lg font-semibold mt-6 mb-4">Metode Pembayaran</h4>
+                    <div class="flex flex-wrap gap-3">
+                        <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                            <i class="ri-visa-fill text-blue-800 ri-lg"></i>
+                        </div>
+                        <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                            <i class="ri-mastercard-fill text-orange-500 ri-lg"></i>
+                        </div>
+                        <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                            <i class="ri-paypal-fill text-blue-600 ri-lg"></i>
+                        </div>
+                        <div class="w-10 h-6 flex items-center justify-center bg-white rounded">
+                            <i class="ri-alipay-fill text-blue-500 ri-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400 text-sm">
+                <p>© 2025 Selera Nusantara. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
